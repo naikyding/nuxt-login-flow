@@ -3,6 +3,8 @@
     <input v-model="form.username" type="text" />
     <input v-model="form.password" type="password" />
     <button @click="userLogin">LOGIN</button>
+
+    <p><button>打需要 token 的 api</button></p>
   </div>
 </template>
 
@@ -10,16 +12,13 @@
 export default {
   data: () => ({
     form: {
-      username: "",
-      password: ""
+      username: "mike",
+      password: "7654321"
     }
   }),
 
   mounted() {
-    this.$store.dispatch("user/userLogin", {
-      username: "mike",
-      password: "7654321"
-    });
+    this.$store.dispatch("user/userLogin", this.form);
   },
 
   methods: {
