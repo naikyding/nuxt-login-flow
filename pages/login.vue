@@ -1,14 +1,20 @@
 <template>
   <div>
-    <input v-model="form.username" type="text" />
-    <input v-model="form.password" type="password" />
-    <button @click="userLogin">LOGIN</button>
+    <template v-if="!isLogin">
+      <input v-model="form.username" type="text" />
+      <input v-model="form.password" type="password" />
+      <button @click="userLogin">LOGIN</button>
+    </template>
 
-    <p><button>打需要 token 的 api</button></p>
+    <template v-else>
+      <p><button @click="getData">打需要 token 的 api</button></p>
+    </template>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data: () => ({
     form: {
@@ -17,13 +23,25 @@ export default {
     }
   }),
 
+  computed: {
+    ...mapState({
+      isLogin: state => state.user.isLogin
+    })
+  },
+
   mounted() {
-    this.$store.dispatch("user/userLogin", this.form);
+    if (this.$cookie.get("token")) {
+      this.$store.commit("user/USER_LOGIN_SUCCESS", { success: true });
+    } else this.$store.dispatch("user/logOut");
   },
 
   methods: {
     userLogin() {
-      console.log("LOGIN");
+      this.$store.dispatch("user/userLogin", this.form);
+    },
+
+    getData() {
+      this.$store.dispatch("user/get_data");
     }
   }
 };
