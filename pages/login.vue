@@ -15,6 +15,13 @@ export default {
     }
   }),
 
+  mounted() {
+    this.$store.dispatch("user/userLogin", {
+      username: "mike",
+      password: "7654321"
+    });
+  },
+
   methods: {
     userLogin() {
       console.log("LOGIN");
