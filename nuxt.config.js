@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs";
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -32,5 +35,12 @@ export default {
   axios: {},
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {}
+  build: {},
+
+  server: {
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, "localhost-key.pem")),
+      cert: fs.readFileSync(path.resolve(__dirname, "localhost.pem"))
+    }
+  }
 };
