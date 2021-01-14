@@ -1,73 +1,75 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        nxut-login-example
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+  <div class="index">
+    <LazyLogo1 v-if="Logo1" class="margin-bottom" />
+    <LazyLogo2 v-if="Logo2" class="margin-bottom" />
+
+    <template v-if="!isLogin">
+      <input v-model="form.username" type="text" />
+      <input v-model="form.password" type="password" />
+      <button @click="userLogin">LOGIN</button>
+    </template>
+
+    <template v-else>
+      <p class="text-center">
+        <button @click="getData">打需要 token 的 api</button>
+      </p>
+    </template>
+
+    <button @click="Logo1 = !Logo1">SHOW1</button>
+    <button @click="Logo2 = !Logo2">SHOW2</button>
+    <Button />
   </div>
 </template>
 
 <script>
-export default {}
+import { mapState } from "vuex";
+
+export default {
+  data: () => ({
+    form: {
+      username: "mike",
+      password: "7654321"
+    },
+    show: false,
+    Logo1: false,
+    Logo2: false
+  }),
+
+  computed: {
+    ...mapState({
+      isLogin: state => state.user.isLogin
+    })
+  },
+
+  mounted() {
+    if (this.$cookie.get("token")) {
+      this.$store.commit("user/USER_LOGIN_SUCCESS", { success: true });
+    } else this.$store.dispatch("user/logOut");
+  },
+
+  methods: {
+    userLogin() {
+      this.$store.dispatch("user/userLogin", this.form);
+    },
+
+    getData() {
+      this.$store.dispatch("user/get_data");
+    }
+  }
+};
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
+<style lang="css" scoped>
+.index {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+}
+.text-center {
   text-align: center;
 }
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.margin-bottom {
+  margin-bottom: 20px;
 }
 </style>
